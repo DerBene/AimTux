@@ -142,29 +142,39 @@ enum class SpammerType : int
 	SPAMMER_POSITIONS,
 };
 
+enum class NoShootType : int
+{
+	NOT_AT_ALL,
+	IF_ON_TARGET,
+	AFTER_FIRST_SHOT,
+};
+
+
 struct AimbotWeapon_t
 {
-	bool enabled, silent, friendly;
+	bool enabled, silent, friendly, closestBone;
 	Bone bone;
 	SmoothType smoothType;
+    NoShootType noShootType;
 	ButtonCode_t aimkey;
 	bool aimkeyOnly, smoothEnabled, smoothSaltEnabled, errorMarginEnabled, autoAimEnabled, aimStepEnabled, rcsEnabled, rcsAlwaysOn;
 	float smoothAmount, smoothSaltMultiplier, errorMarginValue, autoAimFov, aimStepValue, rcsAmountX, rcsAmountY, autoWallValue, autoSlowMinDamage;
 	bool autoPistolEnabled, autoShootEnabled, autoScopeEnabled, noShootEnabled, ignoreJumpEnabled, smokeCheck, flashCheck, autoWallEnabled, autoWallBones[6], autoAimRealDistance, autoSlow, predEnabled;
 
-	AimbotWeapon_t(bool enabled, bool silent, bool friendly, Bone bone, ButtonCode_t aimkey, bool aimkeyOnly,
+	AimbotWeapon_t(bool enabled, bool silent, bool friendly, bool closestBone, Bone bone, ButtonCode_t aimkey, bool aimkeyOnly,
 		   bool smoothEnabled, float smoothValue, SmoothType smoothType, bool smoothSaltEnabled, float smoothSaltMultiplier,
 		   bool errorMarginEnabled, float errorMarginValue,
 		   bool autoAimEnabled, float autoAimValue, bool aimStepEnabled, float aimStepValue,
 		   bool rcsEnabled, bool rcsAlwaysOn, float rcsAmountX, float rcsAmountY,
 		   bool autoPistolEnabled, bool autoShootEnabled, bool autoScopeEnabled,
-		   bool noShootEnabled, bool ignoreJumpEnabled, bool smokeCheck, bool flashCheck,
+           bool noShootEnabled, NoShootType noShootType,bool ignoreJumpEnabled, bool smokeCheck, bool flashCheck,
 		   bool autoWallEnabled, float autoWallValue, bool autoAimRealDistance, bool autoSlow,
 		   float autoSlowMinDamage, bool predEnabled, bool autoWallBones[6] = nullptr)
 	{
 		this->enabled = enabled;
 		this->silent = silent;
 		this->friendly = friendly;
+		this->closestBone = closestBone;
 		this->bone = bone;
 		this->aimkey = aimkey;
 		this->aimkeyOnly = aimkeyOnly;
@@ -187,6 +197,7 @@ struct AimbotWeapon_t
 		this->autoShootEnabled = autoShootEnabled;
 		this->autoScopeEnabled = autoScopeEnabled;
 		this->noShootEnabled = noShootEnabled;
+        this->noShootType = noShootType;
 		this->ignoreJumpEnabled = ignoreJumpEnabled;
 		this->smokeCheck = smokeCheck;
 		this->flashCheck = flashCheck;
@@ -215,6 +226,7 @@ struct AimbotWeapon_t
 		return this->enabled == another.enabled &&
 			this->silent == another.silent &&
 			this->friendly == another.friendly &&
+				this->closestBone == another.closestBone &&
 			this->bone == another.bone &&
 			this->aimkey == another.aimkey &&
 			this->aimkeyOnly == another.aimkeyOnly &&
@@ -237,6 +249,7 @@ struct AimbotWeapon_t
 			this->autoShootEnabled == another.autoShootEnabled &&
 			this->autoScopeEnabled == another.autoScopeEnabled &&
 			this->noShootEnabled == another.noShootEnabled &&
+                this->noShootType == another.noShootType &&
 			this->ignoreJumpEnabled == another.ignoreJumpEnabled &&
 			this->smokeCheck == another.smokeCheck &&
 			this->flashCheck == another.flashCheck &&
@@ -318,6 +331,7 @@ namespace Settings
 		extern bool enabled;
 		extern bool silent;
 		extern bool friendly;
+		extern bool closestBone;
 		extern Bone bone;
 		extern ButtonCode_t aimkey;
 		extern bool aimkeyOnly;
@@ -394,6 +408,7 @@ namespace Settings
 		namespace NoShoot
 		{
 			extern bool enabled;
+            extern NoShootType type;
 		}
 
 		namespace IgnoreJump

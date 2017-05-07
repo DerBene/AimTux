@@ -4,6 +4,7 @@ static ItemDefinitionIndex currentWeapon = ItemDefinitionIndex::INVALID;
 static bool enabled = false;
 static bool silent = false;
 static bool friendly = false;
+static bool closestBone = false;
 static Bone bone = Bone::BONE_HEAD;
 static ButtonCode_t aimkey = ButtonCode_t::MOUSE_MIDDLE;
 static bool aimkeyOnly = false;
@@ -26,6 +27,7 @@ static bool autoPistolEnabled = false;
 static bool autoShootEnabled = false;
 static bool autoScopeEnabled = false;
 static bool noShootEnabled = false;
+static NoShootType noShootType = NoShootType::NOT_AT_ALL;
 static bool ignoreJumpEnabled = false;
 static bool smokeCheck = false;
 static bool flashCheck = false;
@@ -46,6 +48,7 @@ void UI::ReloadWeaponSettings()
 	enabled = Settings::Aimbot::weapons.at(index).enabled;
 	silent = Settings::Aimbot::weapons.at(index).silent;
 	friendly = Settings::Aimbot::weapons.at(index).friendly;
+	closestBone = Settings::Aimbot::weapons.at(index).closestBone;
 	bone = Settings::Aimbot::weapons.at(index).bone;
 	aimkey = Settings::Aimbot::weapons.at(index).aimkey;
 	aimkeyOnly = Settings::Aimbot::weapons.at(index).aimkeyOnly;
@@ -68,6 +71,7 @@ void UI::ReloadWeaponSettings()
 	autoShootEnabled = Settings::Aimbot::weapons.at(index).autoShootEnabled;
 	autoScopeEnabled = Settings::Aimbot::weapons.at(index).autoScopeEnabled;
 	noShootEnabled = Settings::Aimbot::weapons.at(index).noShootEnabled;
+	noShootType = Settings::Aimbot::weapons.at(index).noShootType;
 	ignoreJumpEnabled = Settings::Aimbot::weapons.at(index).ignoreJumpEnabled;
 	smokeCheck = Settings::Aimbot::weapons.at(index).smokeCheck;
 	flashCheck = Settings::Aimbot::weapons.at(index).flashCheck;
@@ -88,13 +92,13 @@ void UI::UpdateWeaponSettings()
 		Settings::Aimbot::weapons[currentWeapon] = AimbotWeapon_t();
 
 	AimbotWeapon_t settings = {
-			enabled, silent, friendly, bone, aimkey, aimkeyOnly,
+			enabled, silent, friendly, closestBone, bone, aimkey, aimkeyOnly,
 			smoothEnabled, smoothValue, smoothType, smoothSaltEnabled, smoothSaltMultiplier,
 			errorMarginEnabled, errorMarginValue,
 			autoAimEnabled, autoAimValue, aimStepEnabled, aimStepValue,
 			rcsEnabled, rcsAlwaysOn, rcsAmountX, rcsAmountY,
 			autoPistolEnabled, autoShootEnabled, autoScopeEnabled,
-			noShootEnabled, ignoreJumpEnabled, smokeCheck, flashCheck, autoWallEnabled, autoWallValue, autoAimRealDistance, autoSlow, autoSlowMinDamage, predEnabled
+			noShootEnabled, noShootType, ignoreJumpEnabled, smokeCheck, flashCheck, autoWallEnabled, autoWallValue, autoAimRealDistance, autoSlow, autoSlowMinDamage, predEnabled
 	};
 
 	for (int bone = (int) Hitbox::HITBOX_HEAD; bone <= (int) Hitbox::HITBOX_ARMS; bone++)
@@ -114,6 +118,7 @@ void Aimbot::RenderTab()
 {
 	const char* targets[] = { "PELVIS", "", "", "HIP", "LOWER SPINE", "MIDDLE SPINE", "UPPER SPINE", "NECK", "HEAD" };
 	const char* smoothTypes[] = { "Slow Near End", "Constant Speed", "Fast Near End" };
+	const char* noShootTypes[] = { "None", "On target", "Spray" };
 	static char filterWeapons[32];
 
 	if (ImGui::Checkbox("Enabled", &enabled))
@@ -160,6 +165,9 @@ void Aimbot::RenderTab()
 		{
 			ImGui::Text("Target");
 			ImGui::Separator();
+			if (ImGui::Checkbox("Closest Bone", &closestBone))
+					UI::UpdateWeaponSettings();
+			SetTooltip("Aims at the bone closest to your crosshair");
 			ImGui::Columns(2, NULL, true);
 			{
 				if (ImGui::Checkbox("Friendly", &friendly))
@@ -324,9 +332,6 @@ void Aimbot::RenderTab()
 			}
 			ImGui::NextColumn();
 			{
-				if (ImGui::Checkbox("No Shoot", &noShootEnabled))
-					UI::UpdateWeaponSettings();
-				SetTooltip("Stops you shooting when locking to an enemy");
 				if (ImGui::Checkbox("Auto Scope", &autoScopeEnabled))
 					UI::UpdateWeaponSettings();
 				SetTooltip("Automatically scopes weapons that have them");
@@ -358,6 +363,12 @@ void Aimbot::RenderTab()
 					ImGui::PopItemWidth();
 				}
 			}
+
+			if (ImGui::Checkbox("No Shoot", &noShootEnabled))
+				UI::UpdateWeaponSettings();
+			SetTooltip("Stops you shooting when locking to an enemy");
+			if (ImGui::Combo("##NOSHOOTTYPE", (int*)& noShootType, noShootTypes, IM_ARRAYSIZE(noShootTypes)))
+				UI::UpdateWeaponSettings();
 
 			ImGui::Columns(1);
 			ImGui::Separator();
