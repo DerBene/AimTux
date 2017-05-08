@@ -1,7 +1,5 @@
 ![banner](http://aimtux.net/images/banner.png)
 
-===================
-
 [![Join the chat at https://www.gitter.im/AimTuxOfficial/lobby](https://img.shields.io/gitter/room/TechnologyAdvice/Stardust.svg?style=flat-square)](https://www.gitter.im/AimTuxOfficial/lobby)
 
 Want to chat or play with other AimTux users? Join us on Gitter!
@@ -26,7 +24,6 @@ If you're having problems compiling make sure you've got the latest version of `
 
 [How to update g++](https://github.com/AimTuxOfficial/AimTux/wiki/Updating-your-compiler)
 
-==================
 
 __Arch:__
 ```bash
@@ -42,7 +39,6 @@ __Gentoo:__
 sudo emerge cmake dev-vcs/git gdb libsdl2 mesa
 ```
 
-===================
 
 #### Download AimTux:
 
@@ -54,7 +50,6 @@ git clone --recursive https://github.com/AimTuxOfficial/AimTux
 cd AimTux
 ```
 
-===================
 
 #### Generate a makefile
 
