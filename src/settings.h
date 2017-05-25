@@ -152,7 +152,7 @@ enum class NoShootType : int
 
 struct AimbotWeapon_t
 {
-	bool enabled, silent, friendly, closestBone;
+	bool enabled, silent, friendly, closestBone, desiredBones[31];
 	Bone bone;
 	SmoothType smoothType;
     NoShootType noShootType;
@@ -210,6 +210,11 @@ struct AimbotWeapon_t
 		for (int i = (int) Hitbox::HITBOX_HEAD; i <= (int) Hitbox::HITBOX_ARMS; i++)
 			this->autoWallBones[i] = autoWallBones != nullptr ? autoWallBones[i] : false;
 
+
+		for (int bone = (int) DesiredBones::BONE_PELVIS; bone <= (int) DesiredBones::BONE_RIGHT_SOLE; bone++)
+			this->desiredBones[bone] = (desiredBones != nullptr ) ? desiredBones[bone] : false;
+
+
 		this->autoAimRealDistance = autoAimRealDistance;
 	}
 
@@ -222,6 +227,19 @@ struct AimbotWeapon_t
 			if (this->autoWallBones[i] != another.autoWallBones[i])
 				return false;
 		}
+
+
+
+
+		for (int bone = (int) DesiredBones::BONE_PELVIS; bone <= (int) DesiredBones::BONE_RIGHT_SOLE; bone++)
+		{
+			if( this->desiredBones[bone] != another.desiredBones[bone] )
+				return false;
+		}
+
+
+
+
 
 		return this->enabled == another.enabled &&
 			this->silent == another.silent &&
@@ -360,6 +378,8 @@ namespace Settings
 			extern bool enabled;
 			extern float fov;
 			extern bool realDistance;
+			extern bool desiredBones[];
+			extern bool closestBone;
 		}
 
 		namespace AutoWall

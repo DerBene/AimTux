@@ -3,4 +3,5 @@
 sudo ./uload
 cmake .
 make -j$(grep "^processor" /proc/cpuinfo | wc -l) "$@"
+sleep 1
 sudo ./load
