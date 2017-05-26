@@ -291,11 +291,16 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, int& bestBone, float
 		if (!Settings::Aimbot::friendly && player->GetTeam() == localplayer->GetTeam())
 			continue;
 
-		IEngineClient::player_info_t entityInformation;
-		engine->GetPlayerInfo(i, &entityInformation);
+		if (!Aimbot::friends.empty())
+		{
+			IEngineClient::player_info_t entityInformation;
+			engine->GetPlayerInfo(i, &entityInformation);
 
-		if (std::find(Aimbot::friends.begin(), Aimbot::friends.end(), entityInformation.xuid) != Aimbot::friends.end())
-			continue;
+			if (std::find(Aimbot::friends.begin(), Aimbot::friends.end(), entityInformation.xuid) != Aimbot::friends.end())
+				continue;
+		}
+
+
 
 		Vector eVecTarget = player->GetBonePosition((int) Settings::Aimbot::bone);
 

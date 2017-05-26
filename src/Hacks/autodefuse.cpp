@@ -1,6 +1,7 @@
 #include "autodefuse.h"
 
 bool Settings::AutoDefuse::enabled = false;
+float Settings::AutoDefuse::time = 0.5f;
 
 void AutoDefuse::CreateMove(CUserCmd *cmd)
 {
@@ -37,13 +38,19 @@ void AutoDefuse::CreateMove(CUserCmd *cmd)
 
 	float bombTimer = bomb->GetBombTime() - globalVars->curtime;
 
-	if (localplayer->HasDefuser() && bombTimer > 5.5f)
-		return;
 
-	if (!localplayer->HasDefuser() && bombTimer > 10.5f)
-		return;
+	if (Settings::AutoDefuse::enabled)
+	{
 
-	float distance = localplayer->GetVecOrigin().DistTo(bomb->GetVecOrigin());
-	if (distance <= 75.0f)
-		cmd->buttons |= IN_USE;
+		if (localplayer->HasDefuser() && bombTimer > (5.0f + Settings::AutoDefuse::time))
+			return;
+
+
+		if (!localplayer->HasDefuser() && bombTimer > (10.0f + Settings::AutoDefuse::time))
+			return;
+
+		float distance = localplayer->GetVecOrigin().DistTo(bomb->GetVecOrigin());
+		if (distance <= 75.0f)
+			cmd->buttons |= IN_USE;
+	}
 }

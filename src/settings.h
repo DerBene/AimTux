@@ -894,6 +894,7 @@ namespace Settings
 	namespace AutoDefuse
 	{
 		extern bool enabled;
+		extern float time;
 	}
 
 	namespace NoSmoke
