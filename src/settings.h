@@ -460,6 +460,7 @@ namespace Settings
 	namespace Triggerbot
 	{
 		extern bool enabled;
+		extern bool onKey;
 		extern ButtonCode_t key;
 
 		namespace Filters

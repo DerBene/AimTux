@@ -15,7 +15,7 @@ void Visuals::RenderTab()
 	{
 		ImGui::Checkbox("Enabled", &Settings::ESP::enabled);
 		ImGui::NextColumn();
-		ImGui::Text("Only on Key");
+		ImGui::Text("Turn on while key is pressed");
 		UI::KeyBindButton(&Settings::ESP::key);
 	}
 	ImGui::Separator();

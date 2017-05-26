@@ -476,7 +476,7 @@ void Aimbot::RenderTab()
 
 			if (ImGui::Checkbox("No Shoot", &noShootEnabled))
 				UI::UpdateWeaponSettings();
-			SetTooltip("Stops you shooting when locking to an enemy");
+			SetTooltip("Different behaviors for 'noshoot'");
 			if (ImGui::Combo("##NOSHOOTTYPE", (int*)& noShootType, noShootTypes, IM_ARRAYSIZE(noShootTypes)))
 				UI::UpdateWeaponSettings();
 
