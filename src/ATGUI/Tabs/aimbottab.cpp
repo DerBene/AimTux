@@ -175,18 +175,20 @@ void Aimbot::RenderTab()
 		{
 			ImGui::Text("Target");
 			ImGui::Separator();
-			if (ImGui::Checkbox("Closest Bone", &closestBone))
-					UI::UpdateWeaponSettings();
-			SetTooltip("Aims at the bone closest to your crosshair");
 			ImGui::Columns(3, NULL, false);
 			{
 				if (ImGui::Checkbox("FriendlyFire", &friendly))
 					UI::UpdateWeaponSettings();
 				SetTooltip("Whether to target friendlies");
 			}
+			if (ImGui::Checkbox("Closest Bone", &closestBone))
+				UI::UpdateWeaponSettings();
+			SetTooltip("Aims at the bone closest to your crosshair");
+			ImGui::PopItemWidth();
 			ImGui::NextColumn();
 			ImGui::NextColumn();
 			{
+
 				ImGui::PushItemWidth(-1);
 				ImGui::Text("Aimbot Target");
 				if(!closestBone){
@@ -285,10 +287,8 @@ void Aimbot::RenderTab()
 				}
 
 
-				if(ImGui::Checkbox("ClosestBone", &closestBone))
-					UI::UpdateWeaponSettings();
-				SetTooltip("Aim at the Bone closest to your Cursor\nInstead of Aiming for a certain bone.");
-				ImGui::PopItemWidth();
+
+
 			}
 			ImGui::Columns(1);
 			ImGui::Separator();
