@@ -10,6 +10,7 @@ void Visuals::RenderTab()
 	const char* ChamsTypes[] = { "Normal", "Normal - XQZ", "Flat", "Flat - XQZ" };
 	const char* ArmsTypes[] = { "Default", "Wireframe", "None" };
 
+	ImGui::Checkbox("Watermark", &Settings::Watermark::enabled);
 	ImGui::Checkbox("Enabled", &Settings::ESP::enabled);
 	ImGui::Separator();
 
