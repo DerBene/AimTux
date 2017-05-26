@@ -320,6 +320,7 @@ void Settings::LoadDefaultsOrSave(std::string path)
 	settings["ESP"]["Hitmarker"]["Damage"]["enabled"] = Settings::ESP::Hitmarker::Damage::enabled;
 	settings["ESP"]["HeadDot"]["enabled"] = Settings::ESP::HeadDot::enabled;
 	settings["ESP"]["HeadDot"]["size"] = Settings::ESP::HeadDot::size;
+	settings["ESP"]["Spread"]["enabled"] = Settings::ESP::Spread::enabled;
 
 	settings["Dlights"]["enabled"] = Settings::Dlights::enabled;
 	settings["Dlights"]["radius"] = Settings::Dlights::radius;
@@ -715,6 +716,7 @@ void Settings::LoadConfig(std::string path)
 	GetVal(settings["ESP"]["Hitmarker"]["Damage"]["enabled"], &Settings::ESP::Hitmarker::Damage::enabled);
 	GetVal(settings["ESP"]["HeadDot"]["enabled"], &Settings::ESP::HeadDot::enabled);
 	GetVal(settings["ESP"]["HeadDot"]["size"], &Settings::ESP::HeadDot::size);
+	GetVal(settings["ESP"]["Spread"]["enabled"], &Settings::ESP::Spread::enabled);
 
 	GetVal(settings["Dlights"]["enabled"], &Settings::Dlights::enabled);
 	GetVal(settings["Dlights"]["radius"], &Settings::Dlights::radius);

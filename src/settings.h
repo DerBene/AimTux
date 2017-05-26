@@ -99,6 +99,7 @@ enum class BoxType : int
 	FLAT_2D,
 	FRAME_2D,
 	BOX_3D,
+	HITBOXES,
 };
 
 enum class BarType : int
