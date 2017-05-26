@@ -462,7 +462,7 @@ enum class ModelType : int // Something I made up
 	SEPARATIST
 
 };
-enum class DesiredBones : int // used for UI; indexing bool array
+enum class DesiredBones : int // used for UI; indexing bool array; map keys for BpneMaps
 {
 	BONE_PELVIS = 0,
 	BONE_HIP,
@@ -501,6 +501,7 @@ enum class DesiredBones : int // used for UI; indexing bool array
 	BONE_RIGHT_SOLE,
 
 };
+
 
 enum class Bone : int
 {
