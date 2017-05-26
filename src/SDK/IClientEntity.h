@@ -610,6 +610,12 @@ public:
 		return *(float*)((uintptr_t)this + offsets.DT_BaseCombatWeapon.m_flNextPrimaryAttack);
 	}
 
+
+	float GetPostponeFireReadyTime()
+	{
+		return *(float*)((uintptr_t)this + offsets.DT_WeaponCSBase.m_flPostponeFireReadyTime);
+	}
+
 	bool GetInReload()
 	{
 		return *(bool*)((uintptr_t)this + offsets.DT_BaseCombatWeapon.m_bInReload);

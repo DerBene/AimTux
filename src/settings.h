@@ -162,14 +162,14 @@ struct AimbotWeapon_t
 	ButtonCode_t aimkey;
 	bool aimkeyOnly, smoothEnabled, smoothSaltEnabled, errorMarginEnabled, autoAimEnabled, aimStepEnabled, rcsEnabled, rcsAlwaysOn;
 	float smoothAmount, smoothSaltMultiplier, errorMarginValue, autoAimFov, aimStepValue, rcsAmountX, rcsAmountY, autoWallValue, autoSlowMinDamage;
-	bool autoPistolEnabled, autoShootEnabled, autoScopeEnabled, noShootEnabled, ignoreJumpEnabled, smokeCheck, flashCheck, autoWallEnabled, autoWallBones[6], autoAimRealDistance, autoSlow, predEnabled;
+	bool autoCockRevolver, autoPistolEnabled, autoShootEnabled, autoScopeEnabled, noShootEnabled, ignoreJumpEnabled, smokeCheck, flashCheck, autoWallEnabled, autoWallBones[6], autoAimRealDistance, autoSlow, predEnabled;
 
 	AimbotWeapon_t(bool enabled, bool silent, bool friendly, bool closestBone, Bone bone, ButtonCode_t aimkey, bool aimkeyOnly,
 		   bool smoothEnabled, float smoothValue, SmoothType smoothType, bool smoothSaltEnabled, float smoothSaltMultiplier,
 		   bool errorMarginEnabled, float errorMarginValue,
 		   bool autoAimEnabled, float autoAimValue, bool aimStepEnabled, float aimStepValue,
 		   bool rcsEnabled, bool rcsAlwaysOn, float rcsAmountX, float rcsAmountY,
-		   bool autoPistolEnabled, bool autoShootEnabled, bool autoScopeEnabled,
+		   bool autoCockRevolver, bool autoPistolEnabled, bool autoShootEnabled, bool autoScopeEnabled,
            bool noShootEnabled, NoShootType noShootType,bool ignoreJumpEnabled, bool smokeCheck, bool flashCheck,
 		   bool autoWallEnabled, float autoWallValue, bool autoAimRealDistance, bool autoSlow,
 		   float autoSlowMinDamage, bool predEnabled, bool autoWallBones[6] = nullptr)
@@ -196,6 +196,7 @@ struct AimbotWeapon_t
 		this->rcsAlwaysOn = rcsAlwaysOn;
 		this->rcsAmountX = rcsAmountX;
 		this->rcsAmountY = rcsAmountY;
+		this->autoCockRevolver = autoCockRevolver;
 		this->autoPistolEnabled = autoPistolEnabled;
 		this->autoShootEnabled = autoShootEnabled;
 		this->autoScopeEnabled = autoScopeEnabled;
@@ -266,6 +267,7 @@ struct AimbotWeapon_t
 			this->rcsAlwaysOn == another.rcsAlwaysOn &&
 			this->rcsAmountX == another.rcsAmountX &&
 			this->rcsAmountY == another.rcsAmountY &&
+			this->autoCockRevolver == another.autoCockRevolver &&
 			this->autoPistolEnabled == another.autoPistolEnabled &&
 			this->autoShootEnabled == another.autoShootEnabled &&
 			this->autoScopeEnabled == another.autoScopeEnabled &&
@@ -404,6 +406,12 @@ namespace Settings
 			extern bool always_on;
 			extern float valueX;
 			extern float valueY;
+		}
+
+
+		namespace AutoCockRevolver
+		{
+			extern bool enabled;
 		}
 
 		namespace AutoPistol

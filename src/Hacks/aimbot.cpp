@@ -48,11 +48,13 @@ float Settings::Aimbot::Smooth::Salting::multiplier = 0.0f;
 bool Settings::Aimbot::AutoSlow::enabled = false;
 float Settings::Aimbot::AutoSlow::minDamage = 5.0f;
 bool Settings::Aimbot::Prediction::enabled = false;
+bool Settings::Aimbot::AutoCockRevolver::enabled = false;
 
 bool Aimbot::aimStepInProgress = false;
 std::vector<int64_t> Aimbot::friends = { };
 
 bool shouldAim;
+float killTime = 0.0f;
 QAngle AimStepLastAngle;
 QAngle RCSLastPunch;
 
@@ -68,7 +70,8 @@ std::unordered_map<Hitbox, std::vector<const char*>, Util::IntHash<Hitbox>> hitb
 };
 
 std::unordered_map<ItemDefinitionIndex, AimbotWeapon_t, Util::IntHash<ItemDefinitionIndex>> Settings::Aimbot::weapons = {
-		{ ItemDefinitionIndex::INVALID, { false, false, false, false, Bone::BONE_HEAD, ButtonCode_t::MOUSE_MIDDLE, false, false, 1.0f, SmoothType::SLOW_END, false, 0.0f, false, 0.0f, true, 180.0f, false, 25.0f, false, false, 2.0f, 2.0f, false, false, false, false, NoShootType::NOT_AT_ALL, false, false, false, false, 10.0f, false, false, false, 5.0f } },
+		//possilbe bug in "false" before "NoShootType::NOT_AT_ALL"
+		{ ItemDefinitionIndex::INVALID, { false, false, false, false, Bone::BONE_HEAD, ButtonCode_t::MOUSE_MIDDLE, false, false, 1.0f, SmoothType::SLOW_END, false, 0.0f, false, 0.0f, true, 180.0f, false, 25.0f, false, false, 2.0f, 2.0f, false, false, false, false, false, NoShootType::NOT_AT_ALL, false, false, false, false, 10.0f, false, false, false, 5.0f } },
 };
 
 static void ApplyErrorToAngle(QAngle* angles, float margin)
@@ -369,14 +372,15 @@ void Aimbot::RCS(QAngle& angle, C_BasePlayer* player, CUserCmd* cmd)
 	if (!(cmd->buttons & IN_ATTACK))
 		return;
 
+	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
+	QAngle CurrentPunch = *localplayer->GetAimPunchAngle();
 	bool isSilent = Settings::Aimbot::silent;
 	bool hasTarget = Settings::Aimbot::AutoAim::enabled && player && shouldAim;
 
 	if (!Settings::Aimbot::RCS::always_on && !hasTarget)
 		return;
 
-	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
-	QAngle CurrentPunch = *localplayer->GetAimPunchAngle();
+
 
 	if (isSilent || hasTarget)
 	{
@@ -434,6 +438,33 @@ void Aimbot::AimStep(C_BasePlayer* player, QAngle& angle, CUserCmd* cmd)
 	AimStepLastAngle.x = angle.x;
 	angle = AimStepLastAngle;
 }
+
+
+
+/*
+ * not finished yet, shooting is bugged and option only shows on revolver weapon setting
+ */
+void Aimbot::AutoCockRevolver(C_BaseCombatWeapon* activeWeapon, C_BasePlayer* localplayer, CUserCmd* cmd) {
+    if (!Settings::Aimbot::AutoCockRevolver::enabled)
+        return;
+
+    if (cmd->buttons & IN_RELOAD)
+        return;
+
+    if (*activeWeapon->GetItemDefinitionIndex() != ItemDefinitionIndex::WEAPON_REVOLVER)
+        return;
+
+    cmd->buttons |= IN_ATTACK;
+    float postponeFireReady = activeWeapon->GetPostponeFireReadyTime();
+    if (cmd->buttons & IN_ATTACK2)
+        cmd->buttons |= IN_ATTACK;
+    else if (postponeFireReady > 0 && postponeFireReady < globalVars->curtime) {
+        cmd->buttons &= ~IN_ATTACK;
+    }
+
+}
+
+
 
 float RandomNumber(float Min, float Max)
 {
@@ -541,7 +572,7 @@ void Aimbot::AutoPistol(C_BaseCombatWeapon* activeWeapon, CUserCmd* cmd)
 	if (activeWeapon->GetNextPrimaryAttack() < globalVars->curtime)
 		return;
 
-	if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_REVOLVER)
+	if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_REVOLVER && !Settings::Aimbot::AutoCockRevolver::enabled)
 		cmd->buttons &= ~IN_ATTACK2;
 	else
 		cmd->buttons &= ~IN_ATTACK;
@@ -570,7 +601,7 @@ void Aimbot::AutoShoot(C_BasePlayer* player, C_BaseCombatWeapon* activeWeapon, C
 
 	if (nextPrimaryAttack > globalVars->curtime)
 	{
-		if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_REVOLVER)
+		if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_REVOLVER && !Settings::Aimbot::AutoCockRevolver::enabled)
 			cmd->buttons &= ~IN_ATTACK2;
 		else
 			cmd->buttons &= ~IN_ATTACK;
@@ -579,7 +610,7 @@ void Aimbot::AutoShoot(C_BasePlayer* player, C_BaseCombatWeapon* activeWeapon, C
 	{
 		if (Settings::Aimbot::AutoShoot::autoscope && activeWeapon->GetCSWpnData()->GetZoomLevels() > 0 && !localplayer->IsScoped())
 			cmd->buttons |= IN_ATTACK2;
-		else if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_REVOLVER)
+		else if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_REVOLVER && !Settings::Aimbot::AutoCockRevolver::enabled)
 			cmd->buttons |= IN_ATTACK2;
 		else
 			cmd->buttons |= IN_ATTACK;
@@ -603,7 +634,7 @@ void Aimbot::ShootCheck(C_BaseCombatWeapon* activeWeapon, CUserCmd* cmd)
 	if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_C4)
 		return;
 
-	if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_REVOLVER)
+	if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_REVOLVER && !Settings::Aimbot::AutoCockRevolver::enabled)
 		cmd->buttons &= ~IN_ATTACK2;
 	else
 		cmd->buttons &= ~IN_ATTACK;
@@ -641,7 +672,7 @@ void Aimbot::NoShoot(C_BaseCombatWeapon* activeWeapon, C_BasePlayer* player, CUs
 			return;
 
 
-		if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_REVOLVER)
+		if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_REVOLVER && !Settings::Aimbot::AutoCockRevolver::enabled)
 			cmd->buttons &= ~IN_ATTACK2;
 		else
 			cmd->buttons &= ~IN_ATTACK;
@@ -730,6 +761,7 @@ void Aimbot::CreateMove(CUserCmd* cmd)
 	Aimbot::AutoCrouch(player, cmd);
 	Aimbot::AutoSlow(player, oldForward, oldSideMove, bestDamage, activeWeapon, cmd);
 	Aimbot::AutoPistol(activeWeapon, cmd);
+	Aimbot::AutoCockRevolver(activeWeapon, player, cmd);
 	Aimbot::AutoShoot(player, activeWeapon, cmd);
 	Aimbot::RCS(angle, player, cmd);
 	Aimbot::Smooth(player, angle, cmd);
@@ -801,6 +833,7 @@ void Aimbot::UpdateValues()
 	Settings::Aimbot::RCS::always_on = currentWeaponSetting.rcsAlwaysOn;
 	Settings::Aimbot::RCS::valueX = currentWeaponSetting.rcsAmountX;
 	Settings::Aimbot::RCS::valueY = currentWeaponSetting.rcsAmountY;
+	Settings::Aimbot::AutoCockRevolver::enabled = currentWeaponSetting.autoCockRevolver;
 	Settings::Aimbot::NoShoot::enabled = currentWeaponSetting.noShootEnabled;
 	Settings::Aimbot::NoShoot::type = currentWeaponSetting.noShootType;
 	Settings::Aimbot::IgnoreJump::enabled = currentWeaponSetting.ignoreJumpEnabled;
