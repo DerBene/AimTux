@@ -519,6 +519,7 @@ namespace Settings
 	namespace ESP
 	{
 		extern bool enabled;
+		extern ButtonCode_t key;
 		extern TeamColorType teamColorType;
 		extern HealthColorVar enemyColor;
 		extern HealthColorVar allyColor;

@@ -224,6 +224,7 @@ void Settings::LoadDefaultsOrSave(std::string path)
 	settings["AntiAim"]["AutoDisable"]["knife_held"] = Settings::AntiAim::AutoDisable::knifeHeld;
 
 	settings["ESP"]["enabled"] = Settings::ESP::enabled;
+	settings["ESP"]["key"] = Util::GetButtonName(Settings::ESP::key);
 	LoadColor(settings["ESP"]["enemy_color"], Settings::ESP::enemyColor);
 	LoadColor(settings["ESP"]["enemy_visible_color"], Settings::ESP::enemyVisibleColor);
 	LoadColor(settings["ESP"]["ally_color"], Settings::ESP::allyColor);
@@ -618,6 +619,7 @@ void Settings::LoadConfig(std::string path)
 	GetVal(settings["AntiAim"]["AutoDisable"]["no_enemy"], &Settings::AntiAim::AutoDisable::noEnemy);
 
 	GetVal(settings["ESP"]["enabled"], &Settings::ESP::enabled);
+	GetButtonCode(settings["ESP"]["key"], &Settings::ESP::key);
 	GetVal(settings["ESP"]["enemy_color"], &Settings::ESP::enemyColor);
 	GetVal(settings["ESP"]["enemy_visible_color"], &Settings::ESP::enemyVisibleColor);
 	GetVal(settings["ESP"]["ally_color"], &Settings::ESP::allyColor);

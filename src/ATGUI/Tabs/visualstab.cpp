@@ -11,7 +11,13 @@ void Visuals::RenderTab()
 	const char* ArmsTypes[] = { "Default", "Wireframe", "None" };
 
 	ImGui::Checkbox("Watermark", &Settings::Watermark::enabled);
-	ImGui::Checkbox("Enabled", &Settings::ESP::enabled);
+	ImGui::Columns(2, NULL, true);
+	{
+		ImGui::Checkbox("Enabled", &Settings::ESP::enabled);
+		ImGui::NextColumn();
+		ImGui::Text("Only on Key");
+		UI::KeyBindButton(&Settings::ESP::key);
+	}
 	ImGui::Separator();
 
 	ImGui::Columns(2, NULL, true);

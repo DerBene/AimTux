@@ -462,7 +462,7 @@ void Aimbot::Smooth(C_BasePlayer* player, QAngle& angle, CUserCmd* cmd)
 	if (Settings::Aimbot::silent)
 		return;
 
-	QAngle viewAngles = QAngle(0.f, 0.f, 0.f);
+	QAngle viewAngles;
 	engine->GetViewAngles(viewAngles);
 
 	QAngle delta = angle - viewAngles;
@@ -477,15 +477,15 @@ void Aimbot::Smooth(C_BasePlayer* player, QAngle& angle, CUserCmd* cmd)
 
 	QAngle toChange = QAngle();
 
-	int type = (int) Settings::Aimbot::Smooth::type;
+	SmoothType type = Settings::Aimbot::Smooth::type;
 
-	if (type == (int) SmoothType::SLOW_END)
-		toChange = delta - delta * smooth;
-	else if (type == (int) SmoothType::CONSTANT || type == (int) SmoothType::FAST_END)
+	if (type == SmoothType::SLOW_END)
+		toChange = delta - (delta * smooth);
+	else if (type == SmoothType::CONSTANT || type == SmoothType::FAST_END)
 	{
 		float coeff = (1.0f - smooth) / delta.Length() * 4.f;
 
-		if (type == (int) SmoothType::FAST_END)
+		if (type == SmoothType::FAST_END)
 			coeff = powf(coeff, 2.f) * 10.f;
 
 		coeff = std::min(1.f, coeff);
