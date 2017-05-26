@@ -180,6 +180,8 @@ void Visuals::RenderTab()
 				SetTooltip("Only show recoil crosshair when shooting");
 				ImGui::Checkbox("Filled", &Settings::ESP::FOVCrosshair::filled);
 				SetTooltip("Fill the fov circle");
+				ImGui::Checkbox("Show Spread", &Settings::ESP::Spread::enabled);
+				SetTooltip("Show where your bullets can possibly Land");
 			}
 			ImGui::Columns(1);
 			ImGui::Separator();

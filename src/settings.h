@@ -686,6 +686,18 @@ namespace Settings
 			extern bool enabled;
 			extern float size;
 		}
+
+
+
+
+		namespace Spread
+		{
+			extern bool enabled;
+		}
+
+
+
+
 	}
 
 	namespace Dlights
