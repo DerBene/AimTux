@@ -303,7 +303,7 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, int& bestBone, float
 		if( Settings::Aimbot::AutoAim::closestBone )
 		{
 			int tempBone = GetClosestBone(cmd, localplayer, player, aimTargetType);
-			if( tempBone == (int)Bone::INVALID )
+			if( tempBone == (int)Bone::INVALID || !Entity::IsVisible(player, tempBone) )
 				continue;
 			bestBone = tempBone;
 			closestEntity = player;
@@ -364,13 +364,14 @@ void Aimbot::RCS(QAngle& angle, C_BasePlayer* player, CUserCmd* cmd)
 	if (!(cmd->buttons & IN_ATTACK))
 		return;
 
-	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
-	QAngle CurrentPunch = *localplayer->GetAimPunchAngle();
 	bool isSilent = Settings::Aimbot::silent;
 	bool hasTarget = Settings::Aimbot::AutoAim::enabled && player && shouldAim;
 
 	if (!Settings::Aimbot::RCS::always_on && !hasTarget)
 		return;
+
+	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
+	QAngle CurrentPunch = *localplayer->GetAimPunchAngle();
 
 	if (isSilent || hasTarget)
 	{
@@ -644,6 +645,11 @@ void Aimbot::NoShoot(C_BaseCombatWeapon* activeWeapon, C_BasePlayer* player, CUs
 
 void Aimbot::CreateMove(CUserCmd* cmd)
 {
+
+	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
+	if (!localplayer || !localplayer->GetAlive())
+		return;
+
 	Aimbot::UpdateValues();
 
 	if (!Settings::Aimbot::enabled)
@@ -657,10 +663,6 @@ void Aimbot::CreateMove(CUserCmd* cmd)
 	QAngle angle = cmd->viewangles;
 
 	shouldAim = Settings::Aimbot::AutoShoot::enabled;
-
-	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
-	if (!localplayer || !localplayer->GetAlive())
-		return;
 
 	if (Settings::Aimbot::IgnoreJump::enabled && !(localplayer->GetFlags() & FL_ONGROUND))
 		return;
