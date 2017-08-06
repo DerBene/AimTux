@@ -52,6 +52,7 @@ bool Settings::Aimbot::AutoCockRevolver::enabled = false;
 
 bool Aimbot::aimStepInProgress = false;
 std::vector<int64_t> Aimbot::friends = { };
+int Aimbot::bestTarget = -1;
 
 bool shouldAim;
 float killTime = 0.0f;
@@ -274,8 +275,8 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, int& bestBone, float
 	// TODO Change the big value with a distance/fov slider
 	float bestFov = Settings::Aimbot::AutoAim::fov;
 	float bestRealDistance = Settings::Aimbot::AutoAim::fov * 5.f;
-	//float bestDistance = 8192.0f;
-	//int bestHp = 100;
+	float bestDistance = 8192.0f;
+	int bestHp = 100;
 
 	if (!localplayer)
 		return NULL;
@@ -283,6 +284,7 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, int& bestBone, float
 	for (int i = 1; i < engine->GetMaxClients(); ++i)
 	{
 		C_BasePlayer* player = (C_BasePlayer*) entityList->GetClientEntity(i);
+        Aimbot::bestTarget = i;
 
 		if (!player
 			|| player == localplayer
@@ -314,8 +316,6 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, int& bestBone, float
 			if( tempBone == (int)Bone::INVALID || !Entity::IsVisible(player, tempBone) )
 				continue;
 			bestBone = tempBone;
-			closestEntity = player;
-			continue;
 		}
 
 
@@ -327,11 +327,14 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, int& bestBone, float
 
 		float distance = pVecTarget.DistTo(eVecTarget);
 		float fov = Math::GetFov(viewAngles, Math::CalcAngle(pVecTarget, eVecTarget));
-		float realDistance = GetRealDistanceFOV(distance, Math::CalcAngle(pVecTarget, eVecTarget), cmd);
 
 
 		if (aimTargetType == AimTargetType::FOV && fov > bestFov)
 			continue;
+
+
+
+        float realDistance = GetRealDistanceFOV(distance, Math::CalcAngle(pVecTarget, eVecTarget), cmd);
 
 		if (aimTargetType == AimTargetType::REAL_DISTANCE && realDistance > bestRealDistance)
 			continue;
@@ -356,6 +359,8 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, int& bestBone, float
         else
         {
             closestEntity = player;
+            bestFov = fov;
+            bestRealDistance = realDistance;
         }
 	}
     if( bestBone == (int)Bone::INVALID )
@@ -418,24 +423,25 @@ void Aimbot::AimStep(C_BasePlayer* player, QAngle& angle, CUserCmd* cmd)
 	if (!player)
 		return;
 
-	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
-	Vector eVecTarget = player->GetBonePosition((int) Settings::Aimbot::bone);
-	Vector pVecTarget = localplayer->GetEyePosition();
-	float fov = Math::GetFov(AimStepLastAngle, Math::CalcAngle(pVecTarget, eVecTarget));
 
-	Aimbot::aimStepInProgress = fov > Settings::Aimbot::AimStep::value;
+	float fov = Math::GetFov(AimStepLastAngle, angle);
+
+	Aimbot::aimStepInProgress = (fov > Settings::Aimbot::AimStep::value);
 
 	if (!Aimbot::aimStepInProgress)
 		return;
 
-	QAngle AimStepDelta = AimStepLastAngle - angle;
+	QAngle deltaAngle = AimStepLastAngle - angle;
 
-	if (AimStepDelta.y < 0)
+	if (deltaAngle.y < 0)
 		AimStepLastAngle.y += Settings::Aimbot::AimStep::value;
 	else
 		AimStepLastAngle.y -= Settings::Aimbot::AimStep::value;
 
-	AimStepLastAngle.x = angle.x;
+    if(deltaAngle.x < 0)
+        AimStepLastAngle.x += Settings::Aimbot::AimStep::value;
+    else
+        AimStepLastAngle.x -= Settings::Aimbot::AimStep::value;
 	angle = AimStepLastAngle;
 }
 

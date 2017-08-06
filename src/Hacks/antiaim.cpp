@@ -103,10 +103,17 @@ void DoAntiAimY(QAngle& angle, int command_number, bool bFlip, bool& clamp)
 			factor =  360.0 / M_PHI;
 			angle.y = fmodf(globalVars->curtime * factor, 360.0);
 			break;
+		case AntiAimType_Y::SPIN_RANDOM:
+			factor = 360.0 / M_PHI;
+			factor *= rand() %25;
+			angle.y = fmodf(globalVars->curtime * factor, 360.0);
+			break;
 		case AntiAimType_Y::JITTER:
 			yFlip ? angle.y -= 90.0f : angle.y -= 270.0f;
 			break;
-		case AntiAimType_Y::BACKJITTER:
+
+		case AntiAimType_Y::RANDOMBACKJITTER:
+			//Old backjitter:
 			angle.y -= 180;
 			random = rand() % 100;
 			maxJitter = rand() % (85 - 70 + 1) + 70;
@@ -115,6 +122,11 @@ void DoAntiAimY(QAngle& angle, int command_number, bool bFlip, bool& clamp)
 				angle.y -= temp;
 			else if (random < 85 + (rand() % 15 ))
 				angle.y += temp;
+			break;
+		case AntiAimType_Y::BACKJITTER:
+			yFlip ? angle.y -= 160 : angle.y += 160;
+			/*
+			*/
 			break;
 		case AntiAimType_Y::SIDE:
 			yFlip ? angle.y += 90.f : angle.y -= 90.0f;
