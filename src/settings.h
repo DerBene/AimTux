@@ -996,7 +996,7 @@ namespace Settings
      			extern bool enemies;
      			extern bool allies;
      		}
-+ 	}
+ 	}
 
 
 	void LoadDefaultsOrSave(std::string path);

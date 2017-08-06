@@ -26,7 +26,7 @@
 
 #define ISREADY_CALLBACK_SIGNATURE "\x48\x83\x3D\x00\x00\x00\x00\x00\x74\x34\x48\x8B\x05"
 #define ISREADY_CALLBACK_MASK "xxx????xxxxxx"
-S
+
 #define GETSDLMGR_SIGNATURE "\x55\x48\x89\xE5\x53\x48\x83\xEC\x18"
 #define GETSDLMGR_MASK "xxxxxxxxx"
 

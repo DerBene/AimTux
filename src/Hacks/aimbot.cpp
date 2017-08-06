@@ -275,8 +275,8 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, int& bestBone, float
 	// TODO Change the big value with a distance/fov slider
 	float bestFov = Settings::Aimbot::AutoAim::fov;
 	float bestRealDistance = Settings::Aimbot::AutoAim::fov * 5.f;
-	float bestDistance = 8192.0f;
-	int bestHp = 100;
+	//float bestDistance = 8192.0f;
+	//int bestHp = 100;
 
 	if (!localplayer)
 		return NULL;
