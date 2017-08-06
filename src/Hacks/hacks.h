@@ -36,5 +36,6 @@
 #include "teleport.h"
 #include "thirdperson.h"
 #include "triggerbot.h"
+#include "autoknife.h"
 #include "valvedscheck.h"
 #include "view.h"

@@ -986,6 +986,19 @@ namespace Settings
 		extern pstring actMapName;
 	}
 
+    namespace AutoKnife
+     	{
+     		extern bool enabled;
+     		extern bool onKey;
+
+     		namespace Filters
+     		{
+     			extern bool enemies;
+     			extern bool allies;
+     		}
++ 	}
+
+
 	void LoadDefaultsOrSave(std::string path);
 	void LoadConfig(std::string path);
 	void LoadSettings();
