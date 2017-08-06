@@ -679,8 +679,6 @@ void ESP::DrawBomb(C_BaseCombatWeapon* bomb)
 
 void ESP::DrawPlantedBomb(C_PlantedC4* bomb)
 {
-	if (!(*csGameRules) || !(*csGameRules)->IsBombPlanted())
-		return;
 
 	ImColor color = bomb->GetBombDefuser() != -1 || bomb->IsBombDefused() ? Settings::ESP::bombDefusingColor.Color() : Settings::ESP::bombColor.Color();
 
@@ -1133,6 +1131,8 @@ void ESP::Paint()
 			continue;
 
 		ClientClass* client = entity->GetClientClass();
+
+
 
 		if (client->m_ClassID == EClassIds::CCSPlayer && (Settings::ESP::Filters::enemies || Settings::ESP::Filters::allies || (Settings::ESP::Filters::localplayer && Settings::ThirdPerson::enabled)))
 		{

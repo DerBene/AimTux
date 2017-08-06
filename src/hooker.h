@@ -24,17 +24,17 @@
 #define CLIENT_MOVEDATA_SIGNATURE "\x48\x8B\x0D\x00\x00\x00\x00\x4C\x89\xF2"
 #define CLIENT_MOVEDATA_MASK "xxx????xxx"
 
-#define ISREADY_CALLBACK_SIGNATURE "\x48\x83\x3D\x00\x00\x00\x00\x00\x55\x48\x89\xE5\x41"
+#define ISREADY_CALLBACK_SIGNATURE "\x48\x83\x3D\x00\x00\x00\x00\x00\x74\x34\x48\x8B\x05"
 #define ISREADY_CALLBACK_MASK "xxx????xxxxxx"
-
+S
 #define GETSDLMGR_SIGNATURE "\x55\x48\x89\xE5\x53\x48\x83\xEC\x18"
 #define GETSDLMGR_MASK "xxxxxxxxx"
 
 #define PLAYERRESOURCES_SIGNATURE "\x48\x8B\x05\x00\x00\x00\x00\x55\x48\x89\xE5\x48\x85\xC0\x74\x10\x48"
 #define PLAYERRESOURCES_MASK "xxx????xxxxxxxxxx"
 
-#define GAMERULES_SIGNATURE "\x48\x8B\x05\x00\x00\x00\x00\x48\x8B\x00\x0F\x84"
-#define GAMERULES_MASK "xxx????xx?xx"
+#define GAMERULES_SIGNATURE "\x48\x8B\x05\x00\x00\x00\x00\x48\x8B\x00\x0F\x84\xA1\x01"
+#define GAMERULES_MASK "xxx????xx?xxxx"
 
 #define CMATSYSTEMSURFACE_STARTDRAWING_SIGNATURE "\x55\x48\x89\xE5\x53\x48\x89\xFB\x48\x83\xEC\x28\x80"
 #define CMATSYSTEMSURFACE_STARTDRAWING_MASK "xxxxxxxxxxxxx"
